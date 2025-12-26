@@ -12,7 +12,7 @@ export type InitAnswers = {
   initGit: boolean;
 };
 
-export const DEFAULT_INIT_OPTIONS ={
+export const DEFAULT_INIT_OPTIONS = {
   projectType: 'frontend' as const,
   initGit: true,
-}
+};

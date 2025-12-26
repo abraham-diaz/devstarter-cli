@@ -7,9 +7,7 @@ type InitCommandOptions = {
   yes?: boolean;
 };
 
-export async function initCommand(
-  options: InitCommandOptions,
-): Promise<void> {
+export async function initCommand(options: InitCommandOptions): Promise<void> {
   let answers;
 
   if (options.yes) {
