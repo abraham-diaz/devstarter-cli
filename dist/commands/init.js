@@ -1,8 +1,19 @@
 import { askInitQuestions } from '../prompts/initPrompts.js';
 import { normalizeProjectName } from '../utils/normalize.js';
 import { createProject } from '../generators/createProject.js';
-export async function initCommand() {
-    const answers = await askInitQuestions();
+import { DEFAULT_INIT_OPTIONS } from '../types/project.js';
+export async function initCommand(options) {
+    let answers;
+    if (options.yes) {
+        answers = {
+            projectName: process.cwd().split(/[\\/]/).pop() ?? 'my-app',
+            projectType: DEFAULT_INIT_OPTIONS.projectType,
+            initGit: DEFAULT_INIT_OPTIONS.initGit,
+        };
+    }
+    else {
+        answers = await askInitQuestions();
+    }
     const projectName = normalizeProjectName(answers.projectName);
     try {
         await createProject({
