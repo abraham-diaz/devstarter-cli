@@ -1,9 +1,5 @@
 import prompts from 'prompts';
-
-export type InitAnswers = {
-  projectName: string;
-  projectType: 'frontend' | 'backend';
-};
+import type { InitAnswers } from '../types/project.js';
 
 export async function askInitQuestions(): Promise<InitAnswers> {
   return prompts([
@@ -22,6 +18,12 @@ export async function askInitQuestions(): Promise<InitAnswers> {
         { title: 'Frontend', value: 'frontend' },
         { title: 'Backend', value: 'backend' },
       ],
+    },
+    {
+      type: 'confirm',
+      name: 'initGit',
+      message: 'Initialize a git repository?',
+      initial: true,
     },
   ]);
 }

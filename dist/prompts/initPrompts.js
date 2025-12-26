@@ -16,5 +16,11 @@ export async function askInitQuestions() {
                 { title: 'Backend', value: 'backend' },
             ],
         },
+        {
+            type: 'confirm',
+            name: 'initGit',
+            message: 'Initialize a git repository?',
+            initial: true,
+        },
     ]);
 }
