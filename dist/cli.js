@@ -9,5 +9,6 @@ program
 program
     .command('init')
     .description('Inicializa un nuevo proyecto')
+    .option('-y, --yes', 'Use default options and skip prompts')
     .action(initCommand);
 program.parse(process.argv);
