@@ -23,9 +23,7 @@ export async function createProject({
   const templatePath = getTemplatePath(projectType, 'basic');
 
   if (!(await fs.pathExists(templatePath))) {
-    throw new Error(
-      `Template not found for type "${projectType}"`,
-    );
+    throw new Error(`Template not found for type "${projectType}"`);
   }
 
   // 4. Crear carpeta raíz del proyecto

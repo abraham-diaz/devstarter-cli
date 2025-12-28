@@ -12,10 +12,7 @@ export async function copyTemplate(
 
   for (const entry of entries) {
     const src = path.join(templatePath, entry);
-    const dest = path.join(
-      targetPath,
-      entry.replace('.tpl', ''),
-    );
+    const dest = path.join(targetPath, entry.replace('.tpl', ''));
 
     const stat = await fs.stat(src);
 

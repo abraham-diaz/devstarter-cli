@@ -8,11 +8,5 @@ export function getTemplatePath(
   projectType: string,
   templateName = 'basic',
 ): string {
-  return path.resolve(
-    __dirname,
-    '..',
-    'templates',
-    projectType,
-    templateName,
-  );
+  return path.resolve(__dirname, '..', 'templates', projectType, templateName);
 }
