@@ -11,7 +11,7 @@ program
   .version('0.1.0');
 
 program
-  .command('init')
+  .command('init [projectName]')
   .description('Inicializa un nuevo proyecto')
   .option('-y, --yes', 'Use default options and skip prompts')
   .action(initCommand);
