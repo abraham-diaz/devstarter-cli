@@ -7,7 +7,7 @@
     "devstarter": "dist/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/copyTemplates.mjs",
     "dev": "tsc --watch",
     "lint": "eslint .",
     "format": "prettier --write .",
