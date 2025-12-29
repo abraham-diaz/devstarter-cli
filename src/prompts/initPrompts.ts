@@ -3,6 +3,7 @@ import type { InitAnswers } from '../types/project.js';
 
 type AskInitQuestionsOptions = {
   skipProjectName?: boolean;
+  skipProjectType?: boolean;
 };
 
 export async function askInitQuestions(
@@ -20,8 +21,8 @@ export async function askInitQuestions(
     });
   }
 
-  questions.push(
-    {
+  if (!options.skipProjectType) {
+    questions.push({
       type: 'select',
       name: 'projectType',
       message: 'Project type:',
@@ -29,14 +30,15 @@ export async function askInitQuestions(
         { title: 'Frontend', value: 'frontend' },
         { title: 'Backend', value: 'backend' },
       ],
-    },
-    {
-      type: 'confirm',
-      name: 'initGit',
-      message: 'Initialize a git repository?',
-      initial: true,
-    },
-  );
+    });
+  }
+
+  questions.push({
+    type: 'confirm',
+    name: 'initGit',
+    message: 'Initialize a git repository?',
+    initial: true,
+  });
 
   return prompts(questions) as Promise<InitAnswers>;
 }

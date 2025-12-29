@@ -1,11 +1,18 @@
 {
   "compilerOptions": {
     "target": "ES2021",
-    "lib": ["ES2021"],
     "module": "Node16",
     "moduleResolution": "Node16",
     "outDir": "dist",
     "rootDir": "src",
-    "strict": true
-  }
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "src/templates",
+    "dist",
+    "node_modules"
+  ]
 }
