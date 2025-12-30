@@ -1,4 +1,4 @@
-export function printSummary({ projectName, projectType, initGit, }) {
+export function printSummary({ projectName, projectType, initGit, packageManager, }) {
     console.log('\n✔ Project created successfully\n');
     console.log('Summary');
     console.log(`- Type: ${projectType}`);
@@ -6,12 +6,12 @@ export function printSummary({ projectName, projectType, initGit, }) {
     console.log(`- Git: ${initGit ? 'initialized' : 'not initialized'}\n`);
     console.log('Next steps');
     console.log(`  cd ${projectName}`);
-    console.log('  npm install');
+    console.log(`  ${packageManager} install`);
     if (projectType === 'backend') {
-        console.log('  npm run dev');
+        console.log(`  ${packageManager} run dev`);
     }
     else {
-        console.log('  npm run dev');
+        console.log(`  ${packageManager} run dev`);
     }
     console.log('');
 }

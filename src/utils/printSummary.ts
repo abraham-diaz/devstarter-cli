@@ -1,15 +1,18 @@
 import type { ProjectType } from '../types/project.js';
 
+
 type PrintSummaryOptions = {
   projectName: string;
   projectType: ProjectType;
   initGit: boolean;
+  packageManager: 'npm' | 'pnpm' | 'yarn';
 };
 
 export function printSummary({
   projectName,
   projectType,
   initGit,
+  packageManager,
 }: PrintSummaryOptions): void {
   console.log('\n✔ Project created successfully\n');
 
@@ -20,12 +23,12 @@ export function printSummary({
 
   console.log('Next steps');
   console.log(`  cd ${projectName}`);
-  console.log('  npm install');
+console.log(`  ${packageManager} install`);
 
   if (projectType === 'backend') {
-    console.log('  npm run dev');
+    console.log(`  ${packageManager} run dev`);
   } else {
-    console.log('  npm run dev');
+    console.log(`  ${packageManager} run dev`);
   }
 
   console.log('');

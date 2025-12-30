@@ -4,11 +4,16 @@ import { askInitQuestions } from '../prompts/initPrompts.js';
 import { normalizeProjectName } from '../utils/normalize.js';
 import { createProject } from '../generators/createProject.js';
 import { printSummary } from '../utils/printSummary.js';
+import { printDryRun } from '../utils/printDryRun.js';
+import { detectPackageManager } from '../utils/detectPackageManager.js';
 
 type InitCommandOptions = {
   yes?: boolean;
   type?: string;
+  dryRun?: boolean;
 };
+
+const packageManager = detectPackageManager();
 
 function resolveProjectType(
   optionType?: string,
@@ -58,6 +63,16 @@ export async function initCommand(
   }
 
   const projectName = normalizeProjectName(answers.projectName);
+const isDryRun = Boolean(options.dryRun);
+  if (isDryRun) {
+  printDryRun({
+    projectName,
+    projectType: answers.projectType,
+    initGit: answers.initGit,
+    packageManager
+  });
+  return;
+}
 
 try {
   await createProject({
@@ -70,6 +85,7 @@ try {
     projectName,
     projectType: answers.projectType,
     initGit: answers.initGit,
+      packageManager,
   });
 } catch (error) {
   console.error('\nError creating project:');
