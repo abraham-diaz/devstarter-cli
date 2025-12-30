@@ -1,5 +1,7 @@
 import type { ProjectType } from '../types/project.js';
-import {styles} from './styles.js';
+import { styles } from './styles.js';
+import { listTemplateFiles } from './listTemplateFiles.js';
+import { getTemplatePath } from './getTemplatePath.js';
 
 type PrintDryRunOptions = {
   projectName: string;
@@ -12,34 +14,31 @@ export function printDryRun({
   projectName,
   projectType,
   initGit,
-  packageManager,
-  
 }: PrintDryRunOptions): void {
   const baseDir = `./${projectName}`;
-  const template = `${projectType}/basic`;
+  const templatePath = getTemplatePath(projectType);
+  const files = listTemplateFiles(templatePath);
 
   console.log(`\n${styles.warning('Dry run – no changes will be made')}\n`);
 
-console.log(styles.title('Plan'));
-console.log(`${styles.info('- Create directory:')} ${baseDir}`);
-console.log(`${styles.info('- Template:')} ${template}`);
-console.log(styles.info('- Files:'));
+  console.log(styles.title('Plan'));
+  console.log(`${styles.info('- Create directory:')} ${baseDir}`);
+  console.log(`${styles.info('- Template:')} ${projectType}/basic`);
+  console.log(styles.info('- Files:'));
 
-  if (projectType === 'backend') {
-    console.log('  - package.json');
-    console.log('  - README.md');
-    console.log('  - src/index.ts');
-  } else {
-    console.log('  - package.json');
-    console.log('  - README.md');
-    console.log('  - src/main.ts');
-  }
+  files.forEach((file) => {
+    console.log(`  - ${file}`);
+  });
 
-  console.log(`- Git: ${initGit ? 'would initialize' : 'skipped'}\n`);
+  console.log(
+    `${styles.info('- Git:')} ${
+      initGit ? 'would initialize' : 'skipped'
+    }\n`,
+  );
 
-  console.log(styles.title('Next steps (if executed'));
-console.log(`  ${styles.highlight(`cd ${projectName}`)}`);
-console.log(`  ${styles.highlight(`${packageManager} install`)}`);
-console.log(`  ${styles.highlight(`${packageManager} run dev`)}`);
-console.log('');
+  console.log(styles.title('Next steps'));
+  console.log(`  ${styles.highlight(`cd ${projectName}`)}`);
+  console.log(`  ${styles.highlight('npm install')}`);
+  console.log(`  ${styles.highlight('npm run dev')}`);
+  console.log('');
 }
