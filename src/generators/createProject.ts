@@ -2,13 +2,14 @@ import fs from 'fs-extra';
 import path from 'node:path';
 
 import type { CreateProjectOptions } from '../types/project.js';
-import { getTemplatePath } from '../utils/templates.js';
+import { getTemplatePath } from '../utils/getTemplatePath.js';
 import { copyTemplate } from '../utils/copyTemplate.js';
 import { initGitRepo } from '../utils/git.js';
 
 export async function createProject({
   projectName,
   projectType,
+  template,
   initGit,
 }: CreateProjectOptions): Promise<void> {
   // 1. Resolver ruta absoluta del proyecto
@@ -20,7 +21,7 @@ export async function createProject({
   }
 
   // 3. Resolver el template a usar
-  const templatePath = getTemplatePath(projectType, 'basic');
+  const templatePath = getTemplatePath(projectType, template);
 
   if (!(await fs.pathExists(templatePath))) {
     throw new Error(`Template not found for type "${projectType}"`);

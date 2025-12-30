@@ -1,8 +1,8 @@
 import { styles } from './styles.js';
-export function printSummary({ projectName, projectType, initGit, packageManager, }) {
+export function printSummary({ projectName, projectType, template, initGit, packageManager, }) {
     console.log(`\n${styles.success('✔ Project created successfully')}\n`);
     console.log(styles.title('Summary'));
-    console.log(`${styles.info('- Type:')} ${projectType}`);
+    console.log(`${styles.info('- Template:')} ${projectType}/${template}`);
     console.log(`${styles.info('- Directory:')} ./${projectName}`);
     console.log(`${styles.info('- Git:')} ${initGit ? styles.success('initialized') : styles.muted('not initialized')}\n`);
     console.log(styles.title('Next steps'));

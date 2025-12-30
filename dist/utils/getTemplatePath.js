@@ -2,6 +2,6 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-export function getTemplatePath(projectType) {
-    return path.resolve(__dirname, '../../dist/templates', projectType, 'basic');
+export function getTemplatePath(projectType, template) {
+    return path.resolve(__dirname, '../../dist/templates', projectType, template);
 }

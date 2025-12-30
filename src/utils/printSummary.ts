@@ -5,6 +5,7 @@ import {styles} from './styles.js';
 type PrintSummaryOptions = {
   projectName: string;
   projectType: ProjectType;
+  template: string;
   initGit: boolean;
   packageManager: 'npm' | 'pnpm' | 'yarn';
 };
@@ -12,13 +13,14 @@ type PrintSummaryOptions = {
 export function printSummary({
   projectName,
   projectType,
+  template,
   initGit,
   packageManager,
 }: PrintSummaryOptions): void {
-console.log(`\n${styles.success('✔ Project created successfully')}\n`);
+  console.log(`\n${styles.success('✔ Project created successfully')}\n`);
 
-console.log(styles.title('Summary'));
-console.log(`${styles.info('- Type:')} ${projectType}`);
+  console.log(styles.title('Summary'));
+  console.log(`${styles.info('- Template:')} ${projectType}/${template}`);
 console.log(`${styles.info('- Directory:')} ./${projectName}`);
 console.log(
   `${styles.info('- Git:')} ${

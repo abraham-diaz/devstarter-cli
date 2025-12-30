@@ -1,9 +1,9 @@
 import fs from 'fs-extra';
 import path from 'node:path';
-import { getTemplatePath } from '../utils/templates.js';
+import { getTemplatePath } from '../utils/getTemplatePath.js';
 import { copyTemplate } from '../utils/copyTemplate.js';
 import { initGitRepo } from '../utils/git.js';
-export async function createProject({ projectName, projectType, initGit, }) {
+export async function createProject({ projectName, projectType, template, initGit, }) {
     // 1. Resolver ruta absoluta del proyecto
     const projectRoot = path.resolve(process.cwd(), projectName);
     // 2. Evitar sobrescribir carpetas existentes
@@ -11,7 +11,7 @@ export async function createProject({ projectName, projectType, initGit, }) {
         throw new Error(`Directory "${projectName}" already exists`);
     }
     // 3. Resolver el template a usar
-    const templatePath = getTemplatePath(projectType, 'basic');
+    const templatePath = getTemplatePath(projectType, template);
     if (!(await fs.pathExists(templatePath))) {
         throw new Error(`Template not found for type "${projectType}"`);
     }

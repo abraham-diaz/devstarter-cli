@@ -6,6 +6,7 @@ import { getTemplatePath } from './getTemplatePath.js';
 type PrintDryRunOptions = {
   projectName: string;
   projectType: ProjectType;
+  template: string;
   initGit: boolean;
   packageManager: 'npm' | 'pnpm' | 'yarn';
 };
@@ -13,17 +14,18 @@ type PrintDryRunOptions = {
 export function printDryRun({
   projectName,
   projectType,
+  template,
   initGit,
 }: PrintDryRunOptions): void {
   const baseDir = `./${projectName}`;
-  const templatePath = getTemplatePath(projectType);
+  const templatePath = getTemplatePath(projectType, template);
   const files = listTemplateFiles(templatePath);
 
   console.log(`\n${styles.warning('Dry run – no changes will be made')}\n`);
 
   console.log(styles.title('Plan'));
   console.log(`${styles.info('- Create directory:')} ${baseDir}`);
-  console.log(`${styles.info('- Template:')} ${projectType}/basic`);
+  console.log(`${styles.info('- Template:')} ${projectType}/${template}`);
   console.log(styles.info('- Files:'));
 
   files.forEach((file) => {

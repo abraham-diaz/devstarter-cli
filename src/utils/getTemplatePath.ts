@@ -7,11 +7,12 @@ const __dirname = path.dirname(__filename);
 
 export function getTemplatePath(
   projectType: ProjectType,
+  template: string,
 ): string {
   return path.resolve(
     __dirname,
     '../../dist/templates',
     projectType,
-    'basic',
+    template,
   );
 }

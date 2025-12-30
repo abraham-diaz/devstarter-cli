@@ -28,3 +28,17 @@ export async function askInitQuestions(options = {}) {
     });
     return prompts(questions);
 }
+export async function askTemplate(options) {
+    if (options.templates.length === 1) {
+        return { template: options.templates[0] };
+    }
+    return prompts({
+        type: 'select',
+        name: 'template',
+        message: 'Template:',
+        choices: options.templates.map((t) => ({
+            title: t,
+            value: t,
+        })),
+    });
+}
