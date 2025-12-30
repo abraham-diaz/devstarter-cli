@@ -5,6 +5,7 @@ import { createProject } from '../generators/createProject.js';
 import { printSummary } from '../utils/printSummary.js';
 import { printDryRun } from '../utils/printDryRun.js';
 import { detectPackageManager } from '../utils/detectPackageManager.js';
+import { styles } from '../utils/styles.js';
 const packageManager = detectPackageManager();
 function resolveProjectType(optionType) {
     if (!optionType)
@@ -65,7 +66,7 @@ export async function initCommand(projectNameArg, options) {
         });
     }
     catch (error) {
-        console.error('\nError creating project:');
-        console.error(error.message);
+        console.error(`\n${styles.error('Error creating project:')}`);
+        console.error(styles.muted(error.message));
     }
 }
