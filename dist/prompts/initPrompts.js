@@ -9,15 +9,18 @@ export async function askInitQuestions(options = {}) {
             validate: (value) => value.length < 1 ? 'Project name is required' : true,
         });
     }
+    if (!options.skipProjectType) {
+        questions.push({
+            type: 'select',
+            name: 'projectType',
+            message: 'Project type:',
+            choices: [
+                { title: 'Frontend', value: 'frontend' },
+                { title: 'Backend', value: 'backend' },
+            ],
+        });
+    }
     questions.push({
-        type: 'select',
-        name: 'projectType',
-        message: 'Project type:',
-        choices: [
-            { title: 'Frontend', value: 'frontend' },
-            { title: 'Backend', value: 'backend' },
-        ],
-    }, {
         type: 'confirm',
         name: 'initGit',
         message: 'Initialize a git repository?',

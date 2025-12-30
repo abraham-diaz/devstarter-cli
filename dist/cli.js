@@ -10,5 +10,7 @@ program
     .command('init [projectName]')
     .description('Inicializa un nuevo proyecto')
     .option('-y, --yes', 'Use default options and skip prompts')
+    .option('-t, --type <type>', 'Project type (frontend | backend)')
+    .option('--dry-run', 'Show what would be generated without creating files')
     .action(initCommand);
 program.parse(process.argv);
