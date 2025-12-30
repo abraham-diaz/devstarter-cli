@@ -3,6 +3,7 @@ import { DEFAULT_INIT_OPTIONS } from '../types/project.js';
 import { askInitQuestions } from '../prompts/initPrompts.js';
 import { normalizeProjectName } from '../utils/normalize.js';
 import { createProject } from '../generators/createProject.js';
+import { printSummary } from '../utils/printSummary.js';
 
 type InitCommandOptions = {
   yes?: boolean;
@@ -58,18 +59,20 @@ export async function initCommand(
 
   const projectName = normalizeProjectName(answers.projectName);
 
-  try {
-    await createProject({
-      projectName,
-      projectType: answers.projectType,
-      initGit: answers.initGit,
-    });
+try {
+  await createProject({
+    projectName,
+    projectType: answers.projectType,
+    initGit: answers.initGit,
+  });
 
-    console.log(
-      `\nProject "${projectName}" created successfully (${answers.projectType})`,
-    );
-  } catch (error) {
-    console.error('\nError creating project:');
-    console.error((error as Error).message);
-  }
+  printSummary({
+    projectName,
+    projectType: answers.projectType,
+    initGit: answers.initGit,
+  });
+} catch (error) {
+  console.error('\nError creating project:');
+  console.error((error as Error).message);
+}
 }
