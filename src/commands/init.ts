@@ -6,6 +6,7 @@ import { createProject } from '../generators/createProject.js';
 import { printSummary } from '../utils/printSummary.js';
 import { printDryRun } from '../utils/printDryRun.js';
 import { detectPackageManager } from '../utils/detectPackageManager.js';
+import { styles } from '../utils/styles.js';
 
 type InitCommandOptions = {
   yes?: boolean;
@@ -88,7 +89,7 @@ try {
       packageManager,
   });
 } catch (error) {
-  console.error('\nError creating project:');
-  console.error((error as Error).message);
+  console.error(`\n${styles.error('Error creating project:')}`);
+  console.error(styles.muted((error as Error).message));
 }
 }

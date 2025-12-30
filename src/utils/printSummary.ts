@@ -1,4 +1,5 @@
 import type { ProjectType } from '../types/project.js';
+import {styles} from './styles.js';
 
 
 type PrintSummaryOptions = {
@@ -14,22 +15,21 @@ export function printSummary({
   initGit,
   packageManager,
 }: PrintSummaryOptions): void {
-  console.log('\n✔ Project created successfully\n');
+console.log(`\n${styles.success('✔ Project created successfully')}\n`);
 
-  console.log('Summary');
-  console.log(`- Type: ${projectType}`);
-  console.log(`- Directory: ./${projectName}`);
-  console.log(`- Git: ${initGit ? 'initialized' : 'not initialized'}\n`);
+console.log(styles.title('Summary'));
+console.log(`${styles.info('- Type:')} ${projectType}`);
+console.log(`${styles.info('- Directory:')} ./${projectName}`);
+console.log(
+  `${styles.info('- Git:')} ${
+    initGit ? styles.success('initialized') : styles.muted('not initialized')
+  }\n`,
+);
 
-  console.log('Next steps');
-  console.log(`  cd ${projectName}`);
-console.log(`  ${packageManager} install`);
+console.log(styles.title('Next steps'));
+console.log(`  ${styles.highlight(`cd ${projectName}`)}`);
+console.log(`  ${styles.highlight(`${packageManager} install`)}`);
+console.log(`  ${styles.highlight(`${packageManager} run dev`)}`);
+console.log('');
 
-  if (projectType === 'backend') {
-    console.log(`  ${packageManager} run dev`);
-  } else {
-    console.log(`  ${packageManager} run dev`);
-  }
-
-  console.log('');
 }
