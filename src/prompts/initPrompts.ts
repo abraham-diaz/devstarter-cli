@@ -10,6 +10,17 @@ type AskTemplateOptions = {
   templates: string[];
 };
 
+export class PromptCancelledError extends Error {
+  constructor() {
+    super('Operation cancelled');
+    this.name = 'PromptCancelledError';
+  }
+}
+
+const onCancel = () => {
+  throw new PromptCancelledError();
+};
+
 export async function askInitQuestions(
   options: AskInitQuestionsOptions = {},
 ): Promise<Omit<InitAnswers, 'template'>> {
@@ -44,7 +55,7 @@ export async function askInitQuestions(
     initial: true,
   });
 
-  return prompts(questions) as Promise<Omit<InitAnswers, 'template'>>;
+  return prompts(questions, { onCancel }) as Promise<Omit<InitAnswers, 'template'>>;
 }
 
 export async function askTemplate(
@@ -54,13 +65,16 @@ export async function askTemplate(
     return { template: options.templates[0] };
   }
 
-  return prompts({
-    type: 'select',
-    name: 'template',
-    message: 'Template:',
-    choices: options.templates.map((t) => ({
-      title: t,
-      value: t,
-    })),
-  }) as Promise<{ template: string }>;
+  return prompts(
+    {
+      type: 'select',
+      name: 'template',
+      message: 'Template:',
+      choices: options.templates.map((t) => ({
+        title: t,
+        value: t,
+      })),
+    },
+    { onCancel },
+  ) as Promise<{ template: string }>;
 }

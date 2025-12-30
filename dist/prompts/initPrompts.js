@@ -1,4 +1,13 @@
 import prompts from 'prompts';
+export class PromptCancelledError extends Error {
+    constructor() {
+        super('Operation cancelled');
+        this.name = 'PromptCancelledError';
+    }
+}
+const onCancel = () => {
+    throw new PromptCancelledError();
+};
 export async function askInitQuestions(options = {}) {
     const questions = [];
     if (!options.skipProjectName) {
@@ -26,7 +35,7 @@ export async function askInitQuestions(options = {}) {
         message: 'Initialize a git repository?',
         initial: true,
     });
-    return prompts(questions);
+    return prompts(questions, { onCancel });
 }
 export async function askTemplate(options) {
     if (options.templates.length === 1) {
@@ -40,5 +49,5 @@ export async function askTemplate(options) {
             title: t,
             value: t,
         })),
-    });
+    }, { onCancel });
 }
