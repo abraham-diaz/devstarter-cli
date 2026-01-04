@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { listTemplates } from './listTemplate.js';
+import { listTemplates } from '../../src/utils/listTemplate.js';
 
 describe('listTemplates', () => {
   it('should return array for frontend type', () => {

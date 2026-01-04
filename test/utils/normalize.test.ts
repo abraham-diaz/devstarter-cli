@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeProjectName } from './normalize.js';
+import { normalizeProjectName } from '../../src/utils/normalize.js';
 
 describe('normalizeProjectName', () => {
   it('should trim whitespace', () => {

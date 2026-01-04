@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'fs-extra';
 import path from 'node:path';
 import os from 'node:os';
-import { detectPackageManager } from './detectPackageManager.js';
+import { detectPackageManager } from '../../src/utils/detectPackageManager.js';
 
 describe('detectPackageManager', () => {
   let tempDir: string;

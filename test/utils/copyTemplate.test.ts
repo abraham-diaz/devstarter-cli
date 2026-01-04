@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'fs-extra';
 import path from 'node:path';
 import os from 'node:os';
-import { copyTemplate } from './copyTemplate.js';
+import { copyTemplate } from '../../src/utils/copyTemplate.js';
 
 describe('copyTemplate', () => {
   let tempDir: string;
