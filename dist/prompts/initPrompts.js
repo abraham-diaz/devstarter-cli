@@ -8,6 +8,25 @@ export class PromptCancelledError extends Error {
 const onCancel = () => {
     throw new PromptCancelledError();
 };
+export async function askProjectName() {
+    return prompts({
+        type: 'text',
+        name: 'projectName',
+        message: 'Project name:',
+        validate: (value) => value.length < 1 ? 'Project name is required' : true,
+    }, { onCancel });
+}
+export async function askProjectStructure() {
+    return prompts({
+        type: 'select',
+        name: 'projectStructure',
+        message: 'Project structure:',
+        choices: [
+            { title: 'Basic', value: 'basic', description: 'Single project (frontend or backend)' },
+            { title: 'Monorepo', value: 'monorepo', description: 'Full-stack with apps/web + apps/api' },
+        ],
+    }, { onCancel });
+}
 export async function askInitQuestions(options = {}) {
     const questions = [];
     if (!options.skipProjectName) {
@@ -44,10 +63,18 @@ export async function askTemplate(options) {
     return prompts({
         type: 'select',
         name: 'template',
-        message: 'Template:',
+        message: options.message ?? 'Template:',
         choices: options.templates.map((t) => ({
             title: t,
             value: t,
         })),
+    }, { onCancel });
+}
+export async function askInitGit() {
+    return prompts({
+        type: 'confirm',
+        name: 'initGit',
+        message: 'Initialize a git repository?',
+        initial: true,
     }, { onCancel });
 }

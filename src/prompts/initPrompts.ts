@@ -1,5 +1,5 @@
 import prompts, { PromptObject } from 'prompts';
-import type { InitAnswers } from '../types/project.js';
+import type { InitAnswers, ProjectStructure } from '../types/project.js';
 
 type AskInitQuestionsOptions = {
   skipProjectName?: boolean;
@@ -8,6 +8,7 @@ type AskInitQuestionsOptions = {
 
 type AskTemplateOptions = {
   templates: string[];
+  message?: string;
 };
 
 export class PromptCancelledError extends Error {
@@ -21,9 +22,37 @@ const onCancel = () => {
   throw new PromptCancelledError();
 };
 
+export async function askProjectName(): Promise<{ projectName: string }> {
+  return prompts(
+    {
+      type: 'text',
+      name: 'projectName',
+      message: 'Project name:',
+      validate: (value: string) =>
+        value.length < 1 ? 'Project name is required' : true,
+    },
+    { onCancel },
+  ) as Promise<{ projectName: string }>;
+}
+
+export async function askProjectStructure(): Promise<{ projectStructure: ProjectStructure }> {
+  return prompts(
+    {
+      type: 'select',
+      name: 'projectStructure',
+      message: 'Project structure:',
+      choices: [
+        { title: 'Basic', value: 'basic', description: 'Single project (frontend or backend)' },
+        { title: 'Monorepo', value: 'monorepo', description: 'Full-stack with apps/web + apps/api' },
+      ],
+    },
+    { onCancel },
+  ) as Promise<{ projectStructure: ProjectStructure }>;
+}
+
 export async function askInitQuestions(
   options: AskInitQuestionsOptions = {},
-): Promise<Omit<InitAnswers, 'template'>> {
+): Promise<Omit<InitAnswers, 'template' | 'projectStructure'>> {
   const questions: PromptObject[] = [];
 
   if (!options.skipProjectName) {
@@ -55,7 +84,7 @@ export async function askInitQuestions(
     initial: true,
   });
 
-  return prompts(questions, { onCancel }) as Promise<Omit<InitAnswers, 'template'>>;
+  return prompts(questions, { onCancel }) as Promise<Omit<InitAnswers, 'template' | 'projectStructure'>>;
 }
 
 export async function askTemplate(
@@ -69,7 +98,7 @@ export async function askTemplate(
     {
       type: 'select',
       name: 'template',
-      message: 'Template:',
+      message: options.message ?? 'Template:',
       choices: options.templates.map((t) => ({
         title: t,
         value: t,
@@ -77,4 +106,16 @@ export async function askTemplate(
     },
     { onCancel },
   ) as Promise<{ template: string }>;
+}
+
+export async function askInitGit(): Promise<{ initGit: boolean }> {
+  return prompts(
+    {
+      type: 'confirm',
+      name: 'initGit',
+      message: 'Initialize a git repository?',
+      initial: true,
+    },
+    { onCancel },
+  ) as Promise<{ initGit: boolean }>;
 }

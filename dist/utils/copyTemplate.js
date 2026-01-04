@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 export async function copyTemplate(templatePath, targetPath, vars) {
+    await fs.ensureDir(targetPath);
     const entries = await fs.readdir(templatePath);
     for (const entry of entries) {
         const src = path.join(templatePath, entry);

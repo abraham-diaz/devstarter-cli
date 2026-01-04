@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 
-import type { CreateProjectOptions } from '../types/project.js';
+import type { ResolvedBasicContext } from '../types/cli.js';
 import { getTemplatePath } from '../utils/getTemplatePath.js';
 import { copyTemplate } from '../utils/copyTemplate.js';
 import { initGitRepo } from '../utils/git.js';
@@ -11,7 +11,7 @@ export async function createProject({
   projectType,
   template,
   initGit,
-}: CreateProjectOptions): Promise<void> {
+}: ResolvedBasicContext): Promise<void> {
   // 1. Resolver ruta absoluta del proyecto
   const projectRoot = path.resolve(process.cwd(), projectName);
 
