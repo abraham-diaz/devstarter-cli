@@ -9,6 +9,9 @@
   "scripts": {
     "build": "tsc && node scripts/copyTemplates.mjs",
     "dev": "tsc --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint .",
     "format": "prettier --write .",
     "prepare": "husky"
@@ -22,7 +25,8 @@
     "eslint": "^9.39.2",
     "husky": "^9.1.7",
     "prettier": "^3.7.4",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "^4.0.16"
   },
   "dependencies": {
     "commander": "^14.0.2",
