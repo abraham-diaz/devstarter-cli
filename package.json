@@ -2,7 +2,34 @@
   "name": "devstarter-cli",
   "version": "0.1.0",
   "type": "module",
-  "description": "CLI para generar proyectos con buenas prácticas",
+  "description": "CLI to generate projects with best practices (basic or monorepo)",
+  "author": "abraham-diaz",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abraham-diaz/devstarter-cli.git"
+  },
+  "homepage": "https://github.com/abraham-diaz/devstarter-cli#readme",
+  "bugs": {
+    "url": "https://github.com/abraham-diaz/devstarter-cli/issues"
+  },
+  "keywords": [
+    "cli",
+    "scaffold",
+    "generator",
+    "monorepo",
+    "frontend",
+    "backend",
+    "boilerplate",
+    "starter",
+    "devstarter"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist"
+  ],
   "bin": {
     "devstarter": "dist/cli.js"
   },
@@ -14,7 +41,8 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "prepublishOnly": "npm run build && npm run test:run"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
