@@ -1,5 +1,5 @@
 import { DEFAULT_INIT_OPTIONS } from '../../types/project.js';
-import { askInitQuestions, askTemplate } from '../../prompts/initPrompts.js';
+import { askProjectName, askProjectStructure, askInitQuestions, askTemplate, askInitGit, } from '../../prompts/initPrompts.js';
 import { normalizeProjectName } from '../../utils/normalize.js';
 import { detectPackageManager } from '../../utils/detectPackageManager.js';
 import { listTemplates } from '../../utils/listTemplate.js';
@@ -9,47 +9,105 @@ import { resolveProjectType, resolveTemplateFlag, resolveProjectName, resolveTem
  * combinando flags, argumentos, defaults y prompts interactivos
  */
 export async function collectInitContext(projectNameArg, options) {
-    const typeFromFlag = resolveProjectType(options.type);
     const useDefaults = options.yes ?? false;
-    // Paso 1: Obtener respuestas base
-    const baseAnswers = await collectBaseAnswers(projectNameArg, typeFromFlag, useDefaults);
-    // Paso 2: Resolver template
-    const templates = listTemplates(baseAnswers.projectType);
+    // Paso 1: Obtener nombre del proyecto
+    const projectName = await collectProjectName(projectNameArg, useDefaults);
+    // Paso 2: Obtener estructura (basic/monorepo)
+    const structure = await collectStructure(useDefaults);
+    // Paso 3: Bifurcar según estructura
+    if (structure === 'monorepo') {
+        return collectMonorepoContext(projectName, useDefaults, options);
+    }
+    return collectBasicContext(projectName, options, useDefaults);
+}
+async function collectProjectName(projectNameArg, useDefaults) {
+    if (projectNameArg) {
+        return normalizeProjectName(projectNameArg);
+    }
+    if (useDefaults) {
+        return normalizeProjectName(resolveProjectName(projectNameArg));
+    }
+    const answer = await askProjectName();
+    return normalizeProjectName(answer.projectName);
+}
+async function collectStructure(useDefaults) {
+    if (useDefaults) {
+        return DEFAULT_INIT_OPTIONS.projectStructure;
+    }
+    const answer = await askProjectStructure();
+    return answer.projectStructure;
+}
+async function collectBasicContext(projectName, options, useDefaults) {
+    const typeFromFlag = resolveProjectType(options.type);
+    // Obtener tipo de proyecto e initGit
+    let projectType;
+    let initGit;
+    if (useDefaults) {
+        projectType = typeFromFlag ?? DEFAULT_INIT_OPTIONS.projectType;
+        initGit = DEFAULT_INIT_OPTIONS.initGit;
+    }
+    else {
+        const answers = await askInitQuestions({
+            skipProjectName: true,
+            skipProjectType: Boolean(typeFromFlag),
+        });
+        projectType = typeFromFlag ?? answers.projectType;
+        initGit = answers.initGit;
+    }
+    // Obtener template
+    const templates = listTemplates(projectType);
     const templateFromFlag = resolveTemplateFlag(options.template, templates);
     const template = await collectTemplate(templateFromFlag, templates, useDefaults);
-    // Paso 3: Construir contexto final
     return {
-        projectName: normalizeProjectName(baseAnswers.projectName),
-        projectType: baseAnswers.projectType,
+        structure: 'basic',
+        projectName,
+        projectType,
         template,
-        initGit: baseAnswers.initGit,
+        initGit,
         packageManager: detectPackageManager(),
         isDryRun: Boolean(options.dryRun),
     };
 }
-async function collectBaseAnswers(projectNameArg, typeFromFlag, useDefaults) {
+async function collectMonorepoContext(projectName, useDefaults, options) {
+    // Templates para web (frontend) y api (backend)
+    const frontendTemplates = listTemplates('frontend');
+    const backendTemplates = listTemplates('backend');
+    let webTemplate;
+    let apiTemplate;
+    let initGit;
     if (useDefaults) {
-        return {
-            projectName: resolveProjectName(projectNameArg),
-            projectType: typeFromFlag ?? DEFAULT_INIT_OPTIONS.projectType,
-            initGit: DEFAULT_INIT_OPTIONS.initGit,
-        };
+        webTemplate = frontendTemplates[0] ?? 'basic';
+        apiTemplate = backendTemplates[0] ?? 'basic';
+        initGit = DEFAULT_INIT_OPTIONS.initGit;
     }
-    const promptAnswers = await askInitQuestions({
-        skipProjectName: Boolean(projectNameArg),
-        skipProjectType: Boolean(typeFromFlag),
-    });
+    else {
+        const webAnswer = await askTemplate({
+            templates: frontendTemplates,
+            message: 'Template for apps/web (frontend):',
+        });
+        webTemplate = webAnswer.template;
+        const apiAnswer = await askTemplate({
+            templates: backendTemplates,
+            message: 'Template for apps/api (backend):',
+        });
+        apiTemplate = apiAnswer.template;
+        const gitAnswer = await askInitGit();
+        initGit = gitAnswer.initGit;
+    }
     return {
-        projectName: resolveProjectName(projectNameArg, promptAnswers.projectName),
-        projectType: typeFromFlag ?? promptAnswers.projectType,
-        initGit: promptAnswers.initGit,
+        structure: 'monorepo',
+        projectName,
+        webTemplate,
+        apiTemplate,
+        initGit,
+        packageManager: 'pnpm', // Monorepo usa pnpm por defecto
+        isDryRun: Boolean(options.dryRun),
     };
 }
 async function collectTemplate(templateFlag, templates, useDefaults) {
     const resolved = resolveTemplateFinal(templateFlag, templates, useDefaults);
     if (resolved)
         return resolved;
-    // Necesita input del usuario
     const answer = await askTemplate({ templates });
     return answer.template;
 }

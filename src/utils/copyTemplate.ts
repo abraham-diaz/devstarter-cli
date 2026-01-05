@@ -8,6 +8,7 @@ export async function copyTemplate(
   targetPath: string,
   vars: TemplateVars,
 ): Promise<void> {
+  await fs.ensureDir(targetPath);
   const entries = await fs.readdir(templatePath);
 
   for (const entry of entries) {

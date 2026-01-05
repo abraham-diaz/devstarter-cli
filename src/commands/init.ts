@@ -1,6 +1,7 @@
 import type { InitCommandOptions } from '../types/cli.js';
 import { PromptCancelledError } from '../prompts/initPrompts.js';
 import { createProject } from '../generators/createProject.js';
+import { createMonorepo } from '../generators/createMonorepo.js';
 import { printSummary } from '../utils/printSummary.js';
 import { printDryRun } from '../utils/printDryRun.js';
 import { styles } from '../utils/styles.js';
@@ -22,7 +23,12 @@ export async function initCommand(
       return;
     }
 
-    await createProject(context);
+    if (context.structure === 'monorepo') {
+      await createMonorepo(context);
+    } else {
+      await createProject(context);
+    }
+
     printSummary(context);
   } catch (error) {
     handleError(error);

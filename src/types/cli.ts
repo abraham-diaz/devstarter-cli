@@ -8,7 +8,8 @@ export type InitCommandOptions = {
   dryRun?: boolean;
 };
 
-export type ResolvedInitContext = {
+export type ResolvedBasicContext = {
+  structure: 'basic';
   projectName: string;
   projectType: ProjectType;
   template: string;
@@ -16,3 +17,15 @@ export type ResolvedInitContext = {
   packageManager: PackageManager;
   isDryRun: boolean;
 };
+
+export type ResolvedMonorepoContext = {
+  structure: 'monorepo';
+  projectName: string;
+  webTemplate: string;
+  apiTemplate: string;
+  initGit: boolean;
+  packageManager: PackageManager;
+  isDryRun: boolean;
+};
+
+export type ResolvedInitContext = ResolvedBasicContext | ResolvedMonorepoContext;
