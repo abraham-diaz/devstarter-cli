@@ -1,126 +1,146 @@
-# devStarter CLI
+# devstarter-tool
 
-CLI para generar proyectos con buenas prácticas y configuraciones predefinidas.
+CLI to generate projects with best practices and predefined configurations.
 
-## Instalacion
-
-```bash
-npm install -g devstarter-cli
-```
-
-O ejecutar directamente con npx:
+## Installation
 
 ```bash
-npx devstarter-cli init my-app
+npm install -g devstarter-tool
 ```
 
-## Uso
-
-### Comando basico
+Or run directly with npx:
 
 ```bash
-devstarter init [nombre-proyecto]
+npx devstarter-tool init my-app
 ```
 
-### Opciones
+## Usage
 
-| Opcion | Descripcion |
+### Basic command
+
+```bash
+devstarter init [project-name]
+```
+
+### Options
+
+| Option | Description |
 |--------|-------------|
-| `-y, --yes` | Usar valores por defecto sin preguntar |
-| `-t, --type <tipo>` | Tipo de proyecto: `frontend` o `backend` |
-| `--dry-run` | Previsualizar cambios sin crear archivos |
+| `-y, --yes` | Use default values without prompting |
+| `-t, --type <type>` | Project type: `frontend` or `backend` |
+| `--template <name>` | Template to use |
+| `--dry-run` | Preview changes without creating files |
 
-### Ejemplos
+### Examples
 
 ```bash
-# Modo interactivo completo
+# Full interactive mode
 devstarter init
 
-# Crear proyecto con nombre especifico
+# Create project with specific name
 devstarter init my-app
 
-# Crear proyecto frontend sin preguntas
+# Create frontend project without prompts
 devstarter init my-app --type frontend -y
 
-# Previsualizar que archivos se crearian
+# Preview what files would be created
 devstarter init my-app --type frontend --dry-run
 ```
 
-## Templates disponibles
+## Project Structures
 
-### Frontend
-
-| Template | Descripcion |
-|----------|-------------|
-| `basic` | TypeScript minimal con estructura basica |
-| `react` | React 18 + Vite + TypeScript |
-
-### Backend
-
-| Template | Descripcion |
-|----------|-------------|
-| `basic` | Express + TypeScript |
-
-## Estructura de proyecto generado
+### Basic (single project)
 
 ```
 my-app/
 ├── src/
-│   └── main.ts (o main.tsx para React)
+│   └── main.ts (or main.tsx for React)
 ├── package.json
 ├── README.md
-└── .git/ (si se inicializa git)
+└── .git/ (if git is initialized)
 ```
 
-## Caracteristicas
+### Monorepo (full-stack)
 
-- Deteccion automatica del package manager (npm, pnpm, yarn)
-- Seleccion interactiva de templates
-- Inicializacion de repositorio Git opcional
-- Modo dry-run para previsualizar cambios
-- Normalizacion automatica de nombres de proyecto (kebab-case)
-- Output con colores para mejor legibilidad
+```
+my-app/
+├── apps/
+│   ├── web/        <- frontend template
+│   └── api/        <- backend template
+├── packages/
+│   └── shared/     <- shared code
+├── package.json
+├── pnpm-workspace.yaml
+├── tsconfig.base.json
+└── README.md
+```
 
-## Desarrollo
+## Available Templates
 
-### Requisitos
+### Frontend
+
+| Template | Description |
+|----------|-------------|
+| `basic` | Minimal TypeScript with basic structure |
+| `react` | React 18 + Vite + TypeScript |
+
+### Backend
+
+| Template | Description |
+|----------|-------------|
+| `basic` | Express + TypeScript |
+
+## Features
+
+- Project structure selection (basic or monorepo)
+- Automatic package manager detection (npm, pnpm, yarn)
+- Interactive template selection
+- Optional Git repository initialization
+- Dry-run mode to preview changes
+- Automatic project name normalization (kebab-case)
+- Colored output for better readability
+
+## Development
+
+### Requirements
 
 - Node.js 18+
-- npm, pnpm o yarn
+- npm, pnpm or yarn
 
 ### Setup
 
 ```bash
-# Clonar repositorio
-git clone https://github.com/abraham-diaz/devStarter-cli.git
-cd devStarter-cli
+# Clone repository
+git clone https://github.com/abraham-diaz/devstarter-cli.git
+cd devstarter-cli
 
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Compilar
+# Build
 npm run build
 
-# Ejecutar localmente
+# Run locally
 node dist/cli.js init test-app --dry-run
 ```
 
-### Scripts disponibles
+### Available Scripts
 
-| Script | Descripcion |
+| Script | Description |
 |--------|-------------|
-| `npm run build` | Compila TypeScript y copia templates |
-| `npm run dev` | Modo watch para desarrollo |
-| `npm run lint` | Ejecuta ESLint |
-| `npm run format` | Formatea codigo con Prettier |
+| `npm run build` | Compile TypeScript and copy templates |
+| `npm run dev` | Watch mode for development |
+| `npm run test` | Run tests |
+| `npm run lint` | Run ESLint |
+| `npm run format` | Format code with Prettier |
 
-### Agregar nuevos templates
+### Adding New Templates
 
-1. Crear carpeta en `src/templates/<tipo>/<nombre-template>/`
-2. Agregar archivos del template (usar `.tpl` para archivos con placeholders)
-3. Placeholders disponibles: `{{projectName}}`
-4. Ejecutar `npm run build`
+1. Create folder in `src/templates/<type>/<template-name>/`
+2. Add template files (use `.tpl` extension for files with placeholders)
+3. Available placeholders: `{{projectName}}`
+4. Run `npm run build`
 
-## Licencia
+## License
 
 MIT
