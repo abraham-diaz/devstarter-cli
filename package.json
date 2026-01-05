@@ -1,5 +1,5 @@
 {
-  "name": "devstarter-cli",
+  "name": "devstarter-tool",
   "version": "0.1.0",
   "type": "module",
   "description": "CLI to generate projects with best practices (basic or monorepo)",
