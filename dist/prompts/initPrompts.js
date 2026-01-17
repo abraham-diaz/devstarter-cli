@@ -48,12 +48,14 @@ export async function askInitQuestions(options = {}) {
             ],
         });
     }
-    questions.push({
-        type: 'confirm',
-        name: 'initGit',
-        message: 'Initialize a git repository?',
-        initial: true,
-    });
+    if (!options.skipInitGit) {
+        questions.push({
+            type: 'confirm',
+            name: 'initGit',
+            message: 'Initialize a git repository?',
+            initial: true,
+        });
+    }
     return prompts(questions, { onCancel });
 }
 export async function askTemplate(options) {

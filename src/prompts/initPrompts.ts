@@ -4,6 +4,7 @@ import type { InitAnswers, ProjectStructure } from '../types/project.js';
 type AskInitQuestionsOptions = {
   skipProjectName?: boolean;
   skipProjectType?: boolean;
+  skipInitGit?: boolean;
 };
 
 type AskTemplateOptions = {
@@ -77,12 +78,14 @@ export async function askInitQuestions(
     });
   }
 
-  questions.push({
-    type: 'confirm',
-    name: 'initGit',
-    message: 'Initialize a git repository?',
-    initial: true,
-  });
+  if (!options.skipInitGit) {
+    questions.push({
+      type: 'confirm',
+      name: 'initGit',
+      message: 'Initialize a git repository?',
+      initial: true,
+    });
+  }
 
   return prompts(questions, { onCancel }) as Promise<Omit<InitAnswers, 'template' | 'projectStructure'>>;
 }
