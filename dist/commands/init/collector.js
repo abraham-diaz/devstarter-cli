@@ -39,20 +39,22 @@ async function collectStructure(useDefaults) {
 }
 async function collectBasicContext(projectName, options, useDefaults) {
     const typeFromFlag = resolveProjectType(options.type);
+    const gitFlagProvided = options.git !== undefined;
     // Obtener tipo de proyecto e initGit
     let projectType;
     let initGit;
     if (useDefaults) {
         projectType = typeFromFlag ?? DEFAULT_INIT_OPTIONS.projectType;
-        initGit = DEFAULT_INIT_OPTIONS.initGit;
+        initGit = gitFlagProvided ? options.git : DEFAULT_INIT_OPTIONS.initGit;
     }
     else {
         const answers = await askInitQuestions({
             skipProjectName: true,
             skipProjectType: Boolean(typeFromFlag),
+            skipInitGit: gitFlagProvided,
         });
         projectType = typeFromFlag ?? answers.projectType;
-        initGit = answers.initGit;
+        initGit = gitFlagProvided ? options.git : answers.initGit;
     }
     // Obtener template
     const templates = listTemplates(projectType);
@@ -72,13 +74,14 @@ async function collectMonorepoContext(projectName, useDefaults, options) {
     // Templates para web (frontend) y api (backend)
     const frontendTemplates = listTemplates('frontend');
     const backendTemplates = listTemplates('backend');
+    const gitFlagProvided = options.git !== undefined;
     let webTemplate;
     let apiTemplate;
     let initGit;
     if (useDefaults) {
         webTemplate = frontendTemplates[0] ?? 'basic';
         apiTemplate = backendTemplates[0] ?? 'basic';
-        initGit = DEFAULT_INIT_OPTIONS.initGit;
+        initGit = gitFlagProvided ? options.git : DEFAULT_INIT_OPTIONS.initGit;
     }
     else {
         const webAnswer = await askTemplate({
@@ -91,8 +94,13 @@ async function collectMonorepoContext(projectName, useDefaults, options) {
             message: 'Template for apps/api (backend):',
         });
         apiTemplate = apiAnswer.template;
-        const gitAnswer = await askInitGit();
-        initGit = gitAnswer.initGit;
+        if (gitFlagProvided) {
+            initGit = options.git;
+        }
+        else {
+            const gitAnswer = await askInitGit();
+            initGit = gitAnswer.initGit;
+        }
     }
     return {
         structure: 'monorepo',

@@ -13,5 +13,6 @@ program
     .option('-t, --type <type>', 'Project type (frontend | backend)')
     .option('--template <name>', 'Template variant (e.g. basic, react)')
     .option('--dry-run', 'Show what would be generated without creating files')
+    .option('--no-git', 'Skip git repository initialization')
     .action(initCommand);
 program.parse(process.argv);

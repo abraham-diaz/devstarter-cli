@@ -6,6 +6,7 @@ export type InitCommandOptions = {
   type?: string;
   template?: string;
   dryRun?: boolean;
+  git?: boolean;
 };
 
 export type ResolvedBasicContext = {
