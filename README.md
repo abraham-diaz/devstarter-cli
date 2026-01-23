@@ -30,6 +30,8 @@ devstarter init [project-name]
 | `-t, --type <type>` | Project type: `frontend` or `backend` |
 | `--template <name>` | Template to use |
 | `--dry-run` | Preview changes without creating files |
+| `--no-git` | Skip git repository initialization |
+| `--no-vitest` | Skip Vitest testing framework setup |
 
 ### Examples
 
@@ -45,6 +47,12 @@ devstarter init my-app --type frontend -y
 
 # Preview what files would be created
 devstarter init my-app --type frontend --dry-run
+
+# Create project without git initialization
+devstarter init my-app --no-git
+
+# Create project without Vitest setup
+devstarter init my-app --no-vitest
 ```
 
 ## Project Structures
@@ -54,7 +62,10 @@ devstarter init my-app --type frontend --dry-run
 ```
 my-app/
 ├── src/
-│   └── main.ts (or main.tsx for React)
+│   ├── main.ts (or main.tsx for React)
+│   └── __tests__/
+│       └── example.test.ts
+├── vitest.config.ts
 ├── package.json
 ├── README.md
 └── .git/ (if git is initialized)
@@ -96,9 +107,27 @@ my-app/
 - Automatic package manager detection (npm, pnpm, yarn)
 - Interactive template selection
 - Optional Git repository initialization
+- Optional Vitest testing framework setup
 - Dry-run mode to preview changes
 - Automatic project name normalization (kebab-case)
 - Colored output for better readability
+
+## Testing Setup (Vitest)
+
+By default, projects are created with Vitest configured. This includes:
+
+- `vitest` as a dev dependency
+- `vitest.config.ts` configuration file
+- Example test file in `src/__tests__/example.test.ts`
+- `test` script in package.json
+
+For React projects, it also adds `jsdom` for DOM testing.
+
+To skip Vitest setup, use the `--no-vitest` flag:
+
+```bash
+devstarter init my-app --no-vitest
+```
 
 ## Development
 
