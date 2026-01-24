@@ -1,6 +1,6 @@
 {
   "name": "devstarter-tool",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "description": "CLI to generate projects with best practices (basic or monorepo)",
   "author": "abraham-diaz",
@@ -22,7 +22,9 @@
     "backend",
     "boilerplate",
     "starter",
-    "devstarter"
+    "devstarter",
+    "vitest",
+    "testing"
   ],
   "engines": {
     "node": ">=18.0.0"
