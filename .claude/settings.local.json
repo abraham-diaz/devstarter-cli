@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node dist/cli.js init:*)"
+      "Bash(node dist/cli.js init:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

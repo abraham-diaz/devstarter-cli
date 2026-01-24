@@ -122,3 +122,15 @@ export async function askInitGit(): Promise<{ initGit: boolean }> {
     { onCancel },
   ) as Promise<{ initGit: boolean }>;
 }
+
+export async function askUseVitest(): Promise<{ useVitest: boolean }> {
+  return prompts(
+    {
+      type: 'confirm',
+      name: 'useVitest',
+      message: 'Add Vitest for testing?',
+      initial: false,
+    },
+    { onCancel },
+  ) as Promise<{ useVitest: boolean }>;
+}

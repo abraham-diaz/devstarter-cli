@@ -15,6 +15,7 @@ export type ResolvedBasicContext = {
   projectType: ProjectType;
   template: string;
   initGit: boolean;
+  useVitest: boolean;
   packageManager: PackageManager;
   isDryRun: boolean;
 };
@@ -25,6 +26,7 @@ export type ResolvedMonorepoContext = {
   webTemplate: string;
   apiTemplate: string;
   initGit: boolean;
+  useVitest: boolean;
   packageManager: PackageManager;
   isDryRun: boolean;
 };
