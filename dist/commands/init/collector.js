@@ -1,5 +1,5 @@
 import { DEFAULT_INIT_OPTIONS } from '../../types/project.js';
-import { askProjectName, askProjectStructure, askInitQuestions, askTemplate, askInitGit, } from '../../prompts/initPrompts.js';
+import { askProjectName, askProjectStructure, askInitQuestions, askTemplate, askInitGit, askUseVitest, } from '../../prompts/initPrompts.js';
 import { normalizeProjectName } from '../../utils/normalize.js';
 import { detectPackageManager } from '../../utils/detectPackageManager.js';
 import { listTemplates } from '../../utils/listTemplate.js';
@@ -60,12 +60,25 @@ async function collectBasicContext(projectName, options, useDefaults) {
     const templates = listTemplates(projectType);
     const templateFromFlag = resolveTemplateFlag(options.template, templates);
     const template = await collectTemplate(templateFromFlag, templates, useDefaults);
+    // Obtener useVitest
+    const vitestFlagProvided = options.vitest !== undefined;
+    let useVitest;
+    if (vitestFlagProvided) {
+        useVitest = options.vitest;
+    }
+    else if (useDefaults) {
+        useVitest = DEFAULT_INIT_OPTIONS.useVitest;
+    }
+    else {
+        useVitest = (await askUseVitest()).useVitest;
+    }
     return {
         structure: 'basic',
         projectName,
         projectType,
         template,
         initGit,
+        useVitest,
         packageManager: detectPackageManager(),
         isDryRun: Boolean(options.dryRun),
     };
@@ -102,12 +115,25 @@ async function collectMonorepoContext(projectName, useDefaults, options) {
             initGit = gitAnswer.initGit;
         }
     }
+    // Obtener useVitest
+    const vitestFlagProvided = options.vitest !== undefined;
+    let useVitest;
+    if (vitestFlagProvided) {
+        useVitest = options.vitest;
+    }
+    else if (useDefaults) {
+        useVitest = DEFAULT_INIT_OPTIONS.useVitest;
+    }
+    else {
+        useVitest = (await askUseVitest()).useVitest;
+    }
     return {
         structure: 'monorepo',
         projectName,
         webTemplate,
         apiTemplate,
         initGit,
+        useVitest,
         packageManager: 'pnpm', // Monorepo usa pnpm por defecto
         isDryRun: Boolean(options.dryRun),
     };
