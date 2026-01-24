@@ -56,6 +56,8 @@ devstarter init [project-name] [options]
 | `--vitest` | Add Vitest for testing |
 | `--no-git` | Skip Git repository initialization |
 | `--dry-run` | Preview changes without creating files |
+| `--no-git` | Skip git repository initialization |
+| `--no-vitest` | Skip Vitest testing framework setup |
 
 ### Examples
 
