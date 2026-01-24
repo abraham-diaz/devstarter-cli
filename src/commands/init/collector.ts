@@ -104,9 +104,16 @@ async function collectBasicContext(
   const template = await collectTemplate(templateFromFlag, templates, useDefaults);
 
   // Obtener useVitest
-  const useVitest = useDefaults
-    ? DEFAULT_INIT_OPTIONS.useVitest
-    : (await askUseVitest()).useVitest;
+  const vitestFlagProvided = options.vitest !== undefined;
+  let useVitest: boolean;
+
+  if (vitestFlagProvided) {
+    useVitest = options.vitest!;
+  } else if (useDefaults) {
+    useVitest = DEFAULT_INIT_OPTIONS.useVitest;
+  } else {
+    useVitest = (await askUseVitest()).useVitest;
+  }
 
   return {
     structure: 'basic',
@@ -160,9 +167,16 @@ async function collectMonorepoContext(
   }
 
   // Obtener useVitest
-  const useVitest = useDefaults
-    ? DEFAULT_INIT_OPTIONS.useVitest
-    : (await askUseVitest()).useVitest;
+  const vitestFlagProvided = options.vitest !== undefined;
+  let useVitest: boolean;
+
+  if (vitestFlagProvided) {
+    useVitest = options.vitest!;
+  } else if (useDefaults) {
+    useVitest = DEFAULT_INIT_OPTIONS.useVitest;
+  } else {
+    useVitest = (await askUseVitest()).useVitest;
+  }
 
   return {
     structure: 'monorepo',

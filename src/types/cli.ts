@@ -7,6 +7,7 @@ export type InitCommandOptions = {
   template?: string;
   dryRun?: boolean;
   git?: boolean;
+  vitest?: boolean;
 };
 
 export type ResolvedBasicContext = {
