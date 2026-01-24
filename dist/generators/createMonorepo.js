@@ -4,7 +4,8 @@ import { getTemplatePath } from '../utils/getTemplatePath.js';
 import { copyTemplate } from '../utils/copyTemplate.js';
 import { initGitRepo } from '../utils/git.js';
 import { setupVitest } from '../utils/setupVitest.js';
-export async function createMonorepo({ projectName, webTemplate, apiTemplate, initGit, useVitest, }) {
+import { installDependencies } from '../utils/installDependencies.js';
+export async function createMonorepo({ projectName, webTemplate, apiTemplate, initGit, useVitest, packageManager, }) {
     // 1. Resolver ruta absoluta del proyecto
     const projectRoot = path.resolve(process.cwd(), projectName);
     // 2. Evitar sobrescribir carpetas existentes
@@ -38,7 +39,9 @@ export async function createMonorepo({ projectName, webTemplate, apiTemplate, in
         await setupVitest(path.join(projectRoot, 'apps', 'web'));
         await setupVitest(path.join(projectRoot, 'apps', 'api'));
     }
-    // 9. Inicializar Git (si aplica)
+    // 9. Instalar dependencias
+    installDependencies(projectRoot, packageManager);
+    // 10. Inicializar Git (si aplica)
     if (initGit) {
         initGitRepo(projectRoot);
     }

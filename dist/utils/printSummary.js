@@ -14,7 +14,6 @@ export function printSummary(context) {
     console.log(`${styles.info('- Git:')} ${context.initGit ? styles.success('initialized') : styles.muted('not initialized')}\n`);
     console.log(styles.title('Next steps'));
     console.log(`  ${styles.highlight(`cd ${context.projectName}`)}`);
-    console.log(`  ${styles.highlight(`${context.packageManager} install`)}`);
     console.log(`  ${styles.highlight(`${context.packageManager} run dev`)}`);
     console.log('');
 }
