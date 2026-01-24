@@ -23,7 +23,6 @@ export function printSummary(context: ResolvedInitContext): void {
 
   console.log(styles.title('Next steps'));
   console.log(`  ${styles.highlight(`cd ${context.projectName}`)}`);
-  console.log(`  ${styles.highlight(`${context.packageManager} install`)}`);
   console.log(`  ${styles.highlight(`${context.packageManager} run dev`)}`);
   console.log('');
 }

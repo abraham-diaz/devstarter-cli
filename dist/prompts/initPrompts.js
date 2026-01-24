@@ -80,3 +80,11 @@ export async function askInitGit() {
         initial: true,
     }, { onCancel });
 }
+export async function askUseVitest() {
+    return prompts({
+        type: 'confirm',
+        name: 'useVitest',
+        message: 'Add Vitest for testing?',
+        initial: false,
+    }, { onCancel });
+}

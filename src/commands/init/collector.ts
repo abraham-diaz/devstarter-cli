@@ -12,6 +12,7 @@ import {
   askInitQuestions,
   askTemplate,
   askInitGit,
+  askUseVitest,
 } from '../../prompts/initPrompts.js';
 import { normalizeProjectName } from '../../utils/normalize.js';
 import { detectPackageManager } from '../../utils/detectPackageManager.js';
@@ -102,12 +103,25 @@ async function collectBasicContext(
   const templateFromFlag = resolveTemplateFlag(options.template, templates);
   const template = await collectTemplate(templateFromFlag, templates, useDefaults);
 
+  // Obtener useVitest
+  const vitestFlagProvided = options.vitest !== undefined;
+  let useVitest: boolean;
+
+  if (vitestFlagProvided) {
+    useVitest = options.vitest!;
+  } else if (useDefaults) {
+    useVitest = DEFAULT_INIT_OPTIONS.useVitest;
+  } else {
+    useVitest = (await askUseVitest()).useVitest;
+  }
+
   return {
     structure: 'basic',
     projectName,
     projectType,
     template,
     initGit,
+    useVitest,
     packageManager: detectPackageManager(),
     isDryRun: Boolean(options.dryRun),
   };
@@ -152,12 +166,25 @@ async function collectMonorepoContext(
     }
   }
 
+  // Obtener useVitest
+  const vitestFlagProvided = options.vitest !== undefined;
+  let useVitest: boolean;
+
+  if (vitestFlagProvided) {
+    useVitest = options.vitest!;
+  } else if (useDefaults) {
+    useVitest = DEFAULT_INIT_OPTIONS.useVitest;
+  } else {
+    useVitest = (await askUseVitest()).useVitest;
+  }
+
   return {
     structure: 'monorepo',
     projectName,
     webTemplate,
     apiTemplate,
     initGit,
+    useVitest,
     packageManager: 'pnpm', // Monorepo usa pnpm por defecto
     isDryRun: Boolean(options.dryRun),
   };

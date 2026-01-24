@@ -2,6 +2,16 @@
 
 CLI to generate projects with best practices and predefined configurations.
 
+## Features
+
+- **Project structures**: Basic (single project) or Monorepo (full-stack)
+- **Automatic dependency installation**: No need to run `npm install` manually
+- **Vitest integration**: Optional testing setup with one flag
+- **Package manager detection**: Automatically uses npm, pnpm, or yarn
+- **Git initialization**: Optional repository setup
+- **Interactive prompts**: Guided project creation
+- **Dry-run mode**: Preview changes before creating files
+
 ## Installation
 
 ```bash
@@ -14,12 +24,26 @@ Or run directly with npx:
 npx devstarter-tool init my-app
 ```
 
-## Usage
-
-### Basic command
+## Quick Start
 
 ```bash
-devstarter init [project-name]
+# Interactive mode - guided setup
+devstarter init
+
+# Quick project with defaults
+devstarter init my-app -y
+
+# Frontend project with Vitest
+devstarter init my-app --type frontend --vitest
+
+# Preview without creating files
+devstarter init my-app --dry-run
+```
+
+## Usage
+
+```bash
+devstarter init [project-name] [options]
 ```
 
 ### Options
@@ -28,7 +52,9 @@ devstarter init [project-name]
 |--------|-------------|
 | `-y, --yes` | Use default values without prompting |
 | `-t, --type <type>` | Project type: `frontend` or `backend` |
-| `--template <name>` | Template to use |
+| `--template <name>` | Template to use (e.g., `basic`, `react`) |
+| `--vitest` | Add Vitest for testing |
+| `--no-git` | Skip Git repository initialization |
 | `--dry-run` | Preview changes without creating files |
 | `--no-git` | Skip git repository initialization |
 | `--no-vitest` | Skip Vitest testing framework setup |
@@ -42,17 +68,17 @@ devstarter init
 # Create project with specific name
 devstarter init my-app
 
-# Create frontend project without prompts
+# Frontend with React template
+devstarter init my-app --type frontend --template react
+
+# Backend with testing setup
+devstarter init my-api --type backend --vitest
+
+# Quick frontend with all defaults
 devstarter init my-app --type frontend -y
 
-# Preview what files would be created
-devstarter init my-app --type frontend --dry-run
-
-# Create project without git initialization
+# Create without Git
 devstarter init my-app --no-git
-
-# Create project without Vitest setup
-devstarter init my-app --no-vitest
 ```
 
 ## Project Structures
@@ -62,13 +88,12 @@ devstarter init my-app --no-vitest
 ```
 my-app/
 ├── src/
-│   ├── main.ts (or main.tsx for React)
-│   └── __tests__/
-│       └── example.test.ts
-├── vitest.config.ts
+│   └── main.ts
 ├── package.json
-├── README.md
-└── .git/ (if git is initialized)
+├── tsconfig.json
+├── vitest.config.ts   # if --vitest
+├── node_modules/
+└── .git/              # if git initialized
 ```
 
 ### Monorepo (full-stack)
@@ -76,10 +101,16 @@ my-app/
 ```
 my-app/
 ├── apps/
-│   ├── web/        <- frontend template
-│   └── api/        <- backend template
+│   ├── web/           # frontend template
+│   │   ├── src/
+│   │   ├── package.json
+│   │   └── vitest.config.ts
+│   └── api/           # backend template
+│       ├── src/
+│       ├── package.json
+│       └── vitest.config.ts
 ├── packages/
-│   └── shared/     <- shared code
+│   └── shared/        # shared code
 ├── package.json
 ├── pnpm-workspace.yaml
 ├── tsconfig.base.json
@@ -92,7 +123,7 @@ my-app/
 
 | Template | Description |
 |----------|-------------|
-| `basic` | Minimal TypeScript with basic structure |
+| `basic` | Vite + TypeScript |
 | `react` | React 18 + Vite + TypeScript |
 
 ### Backend
@@ -101,42 +132,29 @@ my-app/
 |----------|-------------|
 | `basic` | Express + TypeScript |
 
-## Features
+## Vitest Integration
 
-- Project structure selection (basic or monorepo)
-- Automatic package manager detection (npm, pnpm, yarn)
-- Interactive template selection
-- Optional Git repository initialization
-- Optional Vitest testing framework setup
-- Dry-run mode to preview changes
-- Automatic project name normalization (kebab-case)
-- Colored output for better readability
-
-## Testing Setup (Vitest)
-
-By default, projects are created with Vitest configured. This includes:
+When using `--vitest`, the CLI adds:
 
 - `vitest` as a dev dependency
-- `vitest.config.ts` configuration file
-- Example test file in `src/__tests__/example.test.ts`
-- `test` script in package.json
-
-For React projects, it also adds `jsdom` for DOM testing.
-
-To skip Vitest setup, use the `--no-vitest` flag:
+- `vitest.config.ts` with basic configuration
+- `test` and `test:run` scripts in package.json
 
 ```bash
-devstarter init my-app --no-vitest
+# Create project with Vitest
+devstarter init my-app --vitest
+
+# Then run tests
+cd my-app
+npm test
 ```
 
-## Development
-
-### Requirements
+## Requirements
 
 - Node.js 18+
-- npm, pnpm or yarn
+- npm, pnpm, or yarn
 
-### Setup
+## Development
 
 ```bash
 # Clone repository
@@ -153,7 +171,7 @@ npm run build
 node dist/cli.js init test-app --dry-run
 ```
 
-### Available Scripts
+### Scripts
 
 | Script | Description |
 |--------|-------------|

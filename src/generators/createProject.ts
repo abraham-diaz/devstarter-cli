@@ -5,12 +5,16 @@ import type { ResolvedBasicContext } from '../types/cli.js';
 import { getTemplatePath } from '../utils/getTemplatePath.js';
 import { copyTemplate } from '../utils/copyTemplate.js';
 import { initGitRepo } from '../utils/git.js';
+import { setupVitest } from '../utils/setupVitest.js';
+import { installDependencies } from '../utils/installDependencies.js';
 
 export async function createProject({
   projectName,
   projectType,
   template,
   initGit,
+  useVitest,
+  packageManager,
 }: ResolvedBasicContext): Promise<void> {
   // 1. Resolver ruta absoluta del proyecto
   const projectRoot = path.resolve(process.cwd(), projectName);
@@ -35,7 +39,15 @@ export async function createProject({
     projectName,
   });
 
-  // 6. Inicializar Git (si aplica)
+  // 6. Configurar Vitest (si aplica)
+  if (useVitest) {
+    await setupVitest(projectRoot);
+  }
+
+  // 7. Instalar dependencias
+  installDependencies(projectRoot, packageManager);
+
+  // 8. Inicializar Git (si aplica)
   if (initGit) {
     initGitRepo(projectRoot);
   }

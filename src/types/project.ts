@@ -6,6 +6,7 @@ export type CreateProjectOptions = {
   projectType: ProjectType;
   template: string;
   initGit: boolean;
+  useVitest: boolean;
 };
 
 export type CreateMonorepoOptions = {
@@ -13,6 +14,7 @@ export type CreateMonorepoOptions = {
   webTemplate: string;
   apiTemplate: string;
   initGit: boolean;
+  useVitest: boolean;
 };
 
 export type InitAnswers = {
@@ -21,10 +23,12 @@ export type InitAnswers = {
   projectType: ProjectType;
   template: string;
   initGit: boolean;
+  useVitest: boolean;
 };
 
 export const DEFAULT_INIT_OPTIONS = {
   projectStructure: 'basic' as const,
   projectType: 'frontend' as const,
   initGit: true,
+  useVitest: false,
 };
