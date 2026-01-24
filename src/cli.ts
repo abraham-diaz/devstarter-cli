@@ -18,6 +18,7 @@ program
   .option('--template <name>', 'Template variant (e.g. basic, react)')
   .option('--dry-run', 'Show what would be generated without creating files')
   .option('--no-git', 'Skip git repository initialization')
+  .option('--vitest', 'Add Vitest for testing')
   .action(initCommand);
 
 program.parse(process.argv);

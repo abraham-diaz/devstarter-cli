@@ -5,12 +5,14 @@ import type { ResolvedMonorepoContext } from '../types/cli.js';
 import { getTemplatePath } from '../utils/getTemplatePath.js';
 import { copyTemplate } from '../utils/copyTemplate.js';
 import { initGitRepo } from '../utils/git.js';
+import { setupVitest } from '../utils/setupVitest.js';
 
 export async function createMonorepo({
   projectName,
   webTemplate,
   apiTemplate,
   initGit,
+  useVitest,
 }: ResolvedMonorepoContext): Promise<void> {
   // 1. Resolver ruta absoluta del proyecto
   const projectRoot = path.resolve(process.cwd(), projectName);
@@ -47,7 +49,13 @@ export async function createMonorepo({
   // 7. Crear package shared básico
   await createSharedPackage(projectRoot, projectName);
 
-  // 8. Inicializar Git (si aplica)
+  // 8. Configurar Vitest en apps (si aplica)
+  if (useVitest) {
+    await setupVitest(path.join(projectRoot, 'apps', 'web'));
+    await setupVitest(path.join(projectRoot, 'apps', 'api'));
+  }
+
+  // 9. Inicializar Git (si aplica)
   if (initGit) {
     initGitRepo(projectRoot);
   }
