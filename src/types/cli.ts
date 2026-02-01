@@ -33,3 +33,16 @@ export type ResolvedMonorepoContext = {
 };
 
 export type ResolvedInitContext = ResolvedBasicContext | ResolvedMonorepoContext;
+
+export type AddCommandOptions = {
+  dryRun?: boolean;
+  list?: boolean;
+  yes?: boolean;
+};
+
+export type ResolvedAddContext = {
+  projectRoot: string;
+  features: string[];
+  isDryRun: boolean;
+  packageManager: PackageManager;
+};
