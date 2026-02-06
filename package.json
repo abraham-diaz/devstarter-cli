@@ -1,6 +1,6 @@
 {
   "name": "devstarter-tool",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "type": "module",
   "description": "CLI to generate projects with best practices (basic or monorepo)",
   "author": "abraham-diaz",
