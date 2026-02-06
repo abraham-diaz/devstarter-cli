@@ -2,6 +2,7 @@
 
 import { Command } from 'commander';
 import { initCommand } from './commands/init.js';
+import { addCommand } from './commands/add.js';
 
 const program = new Command();
 
@@ -20,5 +21,13 @@ program
   .option('--no-git', 'Skip git repository initialization')
   .option('--vitest', 'Add Vitest for testing')
   .action(initCommand);
+
+program
+  .command('add [feature]')
+  .description('Add a feature to an existing project')
+  .option('--dry-run', 'Show what would be added without making changes')
+  .option('--list', 'List available features')
+  .option('-y, --yes', 'Add all available features without prompting')
+  .action(addCommand);
 
 program.parse(process.argv);
