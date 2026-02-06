@@ -4,12 +4,12 @@ CLI to generate projects with best practices and predefined configurations.
 
 ## Features
 
-- **Project structures**: Basic (single project) or Monorepo (full-stack)
+- **Project scaffolding**: Create frontend, backend, or monorepo projects in seconds
+- **`add` command**: Add features like ESLint, Vitest, and Prettier to existing projects
+- **Interactive prompts**: Guided project creation or flag-based configuration
 - **Automatic dependency installation**: No need to run `npm install` manually
-- **Vitest integration**: Optional testing setup with one flag
 - **Package manager detection**: Automatically uses npm, pnpm, or yarn
 - **Git initialization**: Optional repository setup
-- **Interactive prompts**: Guided project creation
 - **Dry-run mode**: Preview changes before creating files
 
 ## Installation
@@ -36,17 +36,23 @@ devstarter init my-app -y
 # Frontend project with Vitest
 devstarter init my-app --type frontend --vitest
 
+# Add features to an existing project
+devstarter add prettier
+devstarter add eslint
+
 # Preview without creating files
 devstarter init my-app --dry-run
 ```
 
-## Usage
+## Commands
+
+### `devstarter init`
+
+Scaffolds a new project from a template.
 
 ```bash
 devstarter init [project-name] [options]
 ```
-
-### Options
 
 | Option | Description |
 |--------|-------------|
@@ -55,11 +61,10 @@ devstarter init [project-name] [options]
 | `--template <name>` | Template to use (e.g., `basic`, `react`) |
 | `--vitest` | Add Vitest for testing |
 | `--no-git` | Skip Git repository initialization |
-| `--dry-run` | Preview changes without creating files |
-| `--no-git` | Skip git repository initialization |
 | `--no-vitest` | Skip Vitest testing framework setup |
+| `--dry-run` | Preview changes without creating files |
 
-### Examples
+#### Examples
 
 ```bash
 # Full interactive mode
@@ -79,6 +84,49 @@ devstarter init my-app --type frontend -y
 
 # Create without Git
 devstarter init my-app --no-git
+```
+
+### `devstarter add`
+
+Adds features to an existing project. Automatically detects features already configured and skips them.
+
+```bash
+devstarter add [feature] [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--list` | List all available features |
+| `-y, --yes` | Add all available features without prompting |
+| `--dry-run` | Show what would be added without making changes |
+
+#### Available Features
+
+| Feature | Description | What it adds |
+|---------|-------------|--------------|
+| `eslint` | Linter for JavaScript and TypeScript | `eslint.config.js`, lint script, ESLint + typescript-eslint deps |
+| `vitest` | Unit testing framework | `vitest.config.ts`, test scripts, Vitest dep |
+| `prettier` | Code formatter | `.prettierrc`, format script, Prettier dep |
+
+#### Examples
+
+```bash
+# Add a specific feature
+devstarter add prettier
+devstarter add eslint
+devstarter add vitest
+
+# Interactive mode - choose from available features
+devstarter add
+
+# Add all available features at once
+devstarter add -y
+
+# List available features
+devstarter add --list
+
+# Preview changes
+devstarter add prettier --dry-run
 ```
 
 ## Project Structures
@@ -132,23 +180,6 @@ my-app/
 |----------|-------------|
 | `basic` | Express + TypeScript |
 
-## Vitest Integration
-
-When using `--vitest`, the CLI adds:
-
-- `vitest` as a dev dependency
-- `vitest.config.ts` with basic configuration
-- `test` and `test:run` scripts in package.json
-
-```bash
-# Create project with Vitest
-devstarter init my-app --vitest
-
-# Then run tests
-cd my-app
-npm test
-```
-
 ## Requirements
 
 - Node.js 18+
@@ -177,7 +208,9 @@ node dist/cli.js init test-app --dry-run
 |--------|-------------|
 | `npm run build` | Compile TypeScript and copy templates |
 | `npm run dev` | Watch mode for development |
-| `npm run test` | Run tests |
+| `npm run test` | Run tests in watch mode |
+| `npm run test:run` | Single test run |
+| `npm run test:coverage` | Coverage with HTML + text reports |
 | `npm run lint` | Run ESLint |
 | `npm run format` | Format code with Prettier |
 

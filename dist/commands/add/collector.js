@@ -1,4 +1,5 @@
 import { detectProjectContext } from '../../utils/detectProjectContext.js';
+import { PromptCancelledError } from '../../prompts/initPrompts.js';
 import { getAllFeatures } from './registry.js';
 import { resolveFeatureArg } from './resolvers.js';
 import { askFeatures } from '../../prompts/addPrompts.js';
@@ -35,7 +36,7 @@ export async function collectAddContext(featureArg, options) {
     }
     const answer = await askFeatures(available);
     if (answer.features.length === 0) {
-        throw new Error('No features selected.');
+        throw new PromptCancelledError();
     }
     return {
         projectRoot: projectContext.root,

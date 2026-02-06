@@ -1,5 +1,7 @@
 import { eslintFeature } from '../../features/eslint.js';
-const features = [eslintFeature];
+import { vitestFeature } from '../../features/vitest.js';
+import { prettierFeature } from '../../features/prettier.js';
+const features = [eslintFeature, vitestFeature, prettierFeature];
 const featureMap = new Map(features.map((f) => [f.id, f]));
 export function getAvailableFeatureIds() {
     return features.map((f) => f.id);

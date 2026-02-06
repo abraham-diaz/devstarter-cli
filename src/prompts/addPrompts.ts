@@ -21,6 +21,7 @@ export async function askFeatures(
       })),
       instructions: false,
       hint: '- Space to select. Return to submit',
+      min: 1,
     },
     { onCancel },
   ) as Promise<{ features: string[] }>;

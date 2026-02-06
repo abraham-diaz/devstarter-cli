@@ -15,5 +15,6 @@ export async function askFeatures(available) {
         })),
         instructions: false,
         hint: '- Space to select. Return to submit',
+        min: 1,
     }, { onCancel });
 }
