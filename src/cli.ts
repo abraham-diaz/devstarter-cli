@@ -8,12 +8,12 @@ const program = new Command();
 
 program
   .name('devstarter')
-  .description('CLI para generar proyectos con buenas prácticas')
+  .description('CLI to generate and manage development projects with ease')
   .version('0.1.0');
 
 program
   .command('init [projectName]')
-  .description('Inicializa un nuevo proyecto')
+  .description('Initialize a new project')
   .option('-y, --yes', 'Use default options and skip prompts')
   .option('-t, --type <type>', 'Project type (frontend | backend)')
   .option('--template <name>', 'Template variant (e.g. basic, react)')

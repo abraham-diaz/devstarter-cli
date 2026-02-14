@@ -16,3 +16,25 @@ export function detectPackageManager(
 
   return 'npm';
 }
+
+export function getInstallCommand(pm: PackageManager): string {
+  switch (pm) {
+    case 'pnpm':
+      return 'pnpm install --frozen-lockfile';
+    case 'yarn':
+      return 'yarn install --frozen-lockfile';
+    default:
+      return 'npm ci';
+  }
+}
+
+export function getRunCommand(pm: PackageManager, script: string): string {
+  switch (pm) {
+    case 'pnpm':
+      return `pnpm run ${script}`;
+    case 'yarn':
+      return `yarn ${script}`;
+    default:
+      return `npm run ${script}`;
+  }
+}
