@@ -5,7 +5,7 @@ CLI to generate projects with best practices and predefined configurations.
 ## Features
 
 - **Project scaffolding**: Create frontend, backend, or monorepo projects in seconds
-- **`add` command**: Add features like ESLint, Vitest, and Prettier to existing projects
+- **`add` command**: Add features like ESLint, Vitest, Prettier, CI, Docker, and Tailwind CSS to existing projects
 - **Interactive prompts**: Guided project creation or flag-based configuration
 - **Automatic dependency installation**: No need to run `npm install` manually
 - **Package manager detection**: Automatically uses npm, pnpm, or yarn
@@ -39,6 +39,9 @@ devstarter init my-app --type frontend --vitest
 # Add features to an existing project
 devstarter add prettier
 devstarter add eslint
+devstarter add tailwind
+devstarter add docker
+devstarter add ci
 
 # Preview without creating files
 devstarter init my-app --dry-run
@@ -107,6 +110,9 @@ devstarter add [feature] [options]
 | `eslint` | Linter for JavaScript and TypeScript | `eslint.config.js`, lint script, ESLint + typescript-eslint deps |
 | `vitest` | Unit testing framework | `vitest.config.ts`, test scripts, Vitest dep |
 | `prettier` | Code formatter | `.prettierrc`, format script, Prettier dep |
+| `ci` | CI/CD pipeline | GitHub Actions workflow (`.github/workflows/ci.yml`) or GitLab CI (`.gitlab-ci.yml`) with lint, test, and build steps |
+| `docker` | Docker containerization | `Dockerfile` (multi-stage build), `docker-compose.yml`, `.dockerignore`. Auto-detects frontend (nginx) vs backend (node) |
+| `tailwind` | Tailwind CSS v4 | `tailwindcss` + `@tailwindcss/vite` deps, Vite plugin config, `@import "tailwindcss"` in CSS |
 
 #### Examples
 
@@ -115,6 +121,9 @@ devstarter add [feature] [options]
 devstarter add prettier
 devstarter add eslint
 devstarter add vitest
+devstarter add tailwind
+devstarter add docker
+devstarter add ci
 
 # Interactive mode - choose from available features
 devstarter add
