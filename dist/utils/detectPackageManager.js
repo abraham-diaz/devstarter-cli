@@ -9,3 +9,23 @@ export function detectPackageManager(cwd = process.cwd()) {
     }
     return 'npm';
 }
+export function getInstallCommand(pm) {
+    switch (pm) {
+        case 'pnpm':
+            return 'pnpm install --frozen-lockfile';
+        case 'yarn':
+            return 'yarn install --frozen-lockfile';
+        default:
+            return 'npm ci';
+    }
+}
+export function getRunCommand(pm, script) {
+    switch (pm) {
+        case 'pnpm':
+            return `pnpm run ${script}`;
+        case 'yarn':
+            return `yarn ${script}`;
+        default:
+            return `npm run ${script}`;
+    }
+}

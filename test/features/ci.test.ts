@@ -76,13 +76,24 @@ describe('ciFeature', () => {
     });
   });
 
-  describe('apply - GitHub Actions', () => {
-    beforeEach(() => {
+  describe('prompt', () => {
+    it('should return selected provider', async () => {
       mockPrompts.mockResolvedValue({ provider: 'github' });
+      const result = await ciFeature.prompt!(createContext());
+      expect(result).toEqual({ provider: 'github' });
     });
 
+    it('should throw when selection is cancelled', async () => {
+      mockPrompts.mockResolvedValue({});
+      await expect(ciFeature.prompt!(createContext())).rejects.toThrow(
+        'CI provider selection cancelled',
+      );
+    });
+  });
+
+  describe('apply - GitHub Actions', () => {
     it('should create .github/workflows/ci.yml', async () => {
-      await ciFeature.apply(createContext());
+      await ciFeature.apply(createContext(), { provider: 'github' });
 
       const ciPath = path.join(
         tempDir,
@@ -94,7 +105,7 @@ describe('ciFeature', () => {
     });
 
     it('should include checkout, setup-node, and install steps', async () => {
-      await ciFeature.apply(createContext());
+      await ciFeature.apply(createContext(), { provider: 'github' });
 
       const workflow = await fs.readFile(
         path.join(tempDir, '.github', 'workflows', 'ci.yml'),
@@ -106,7 +117,7 @@ describe('ciFeature', () => {
     });
 
     it('should include lint, test, and build steps when scripts exist', async () => {
-      await ciFeature.apply(createContext());
+      await ciFeature.apply(createContext(), { provider: 'github' });
 
       const workflow = await fs.readFile(
         path.join(tempDir, '.github', 'workflows', 'ci.yml'),
@@ -119,7 +130,7 @@ describe('ciFeature', () => {
 
     it('should omit lint/test/build steps when scripts are absent', async () => {
       const context = createContext({ packageJson: { scripts: {} } });
-      await ciFeature.apply(context);
+      await ciFeature.apply(context, { provider: 'github' });
 
       const workflow = await fs.readFile(
         path.join(tempDir, '.github', 'workflows', 'ci.yml'),
@@ -132,7 +143,7 @@ describe('ciFeature', () => {
 
     it('should use pnpm commands when packageManager is pnpm', async () => {
       const context = createContext({ packageManager: 'pnpm' });
-      await ciFeature.apply(context);
+      await ciFeature.apply(context, { provider: 'github' });
 
       const workflow = await fs.readFile(
         path.join(tempDir, '.github', 'workflows', 'ci.yml'),
@@ -144,12 +155,8 @@ describe('ciFeature', () => {
   });
 
   describe('apply - GitLab CI', () => {
-    beforeEach(() => {
-      mockPrompts.mockResolvedValue({ provider: 'gitlab' });
-    });
-
     it('should create .gitlab-ci.yml', async () => {
-      await ciFeature.apply(createContext());
+      await ciFeature.apply(createContext(), { provider: 'gitlab' });
 
       expect(
         await fs.pathExists(path.join(tempDir, '.gitlab-ci.yml')),
@@ -157,7 +164,7 @@ describe('ciFeature', () => {
     });
 
     it('should include stages and install job', async () => {
-      await ciFeature.apply(createContext());
+      await ciFeature.apply(createContext(), { provider: 'gitlab' });
 
       const config = await fs.readFile(
         path.join(tempDir, '.gitlab-ci.yml'),
@@ -169,7 +176,7 @@ describe('ciFeature', () => {
     });
 
     it('should include lint, test, and build jobs when scripts exist', async () => {
-      await ciFeature.apply(createContext());
+      await ciFeature.apply(createContext(), { provider: 'gitlab' });
 
       const config = await fs.readFile(
         path.join(tempDir, '.gitlab-ci.yml'),
@@ -182,7 +189,7 @@ describe('ciFeature', () => {
 
     it('should omit lint/test/build jobs when scripts are absent', async () => {
       const context = createContext({ packageJson: { scripts: {} } });
-      await ciFeature.apply(context);
+      await ciFeature.apply(context, { provider: 'gitlab' });
 
       const config = await fs.readFile(
         path.join(tempDir, '.gitlab-ci.yml'),

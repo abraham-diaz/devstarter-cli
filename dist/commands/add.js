@@ -18,8 +18,11 @@ export async function addCommand(featureArg, options) {
         const projectContext = await detectProjectContext(context.projectRoot);
         for (const featureId of context.features) {
             const feature = getFeature(featureId);
+            const featureOptions = feature.prompt
+                ? await feature.prompt(projectContext)
+                : undefined;
             console.log(`${styles.info('Adding')} ${feature.name}...`);
-            await feature.apply(projectContext);
+            await feature.apply(projectContext, featureOptions);
             console.log(`${styles.success('Added')} ${feature.name}`);
         }
         console.log(`\n${styles.info('Installing dependencies...')}`);

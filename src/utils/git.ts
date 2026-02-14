@@ -7,7 +7,7 @@ export function initGitRepo(projectRoot: string): void {
     throw new Error('Project root does not exist');
   }
 
-  // Evitar inicializar Git dentro de otro repo
+  // check if .git already exists to avoid overwriting existing repos
   if (fs.existsSync(path.join(projectRoot, '.git'))) {
     throw new Error('Git repository already exists in project root');
   }
