@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 import type { FeatureDefinition, ProjectContext } from '../types/feature.js';
+import { getInstallCommand } from '../utils/detectPackageManager.js';
 
 async function detect(context: ProjectContext): Promise<boolean> {
   const configFiles = [
@@ -28,19 +29,8 @@ function isFrontend(packageJson: Record<string, unknown>): boolean {
   return 'vite' in deps;
 }
 
-function getInstallCommand(context: ProjectContext): string {
-  switch (context.packageManager) {
-    case 'pnpm':
-      return 'pnpm install --frozen-lockfile';
-    case 'yarn':
-      return 'yarn install --frozen-lockfile';
-    default:
-      return 'npm ci';
-  }
-}
-
 function generateDockerfile(context: ProjectContext): string {
-  const installCmd = getInstallCommand(context);
+  const installCmd = getInstallCommand(context.packageManager);
   const frontend = isFrontend(context.packageJson);
 
   if (frontend) {

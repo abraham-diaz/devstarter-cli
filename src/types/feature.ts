@@ -7,10 +7,13 @@ export type ProjectContext = {
   packageManager: PackageManager;
 };
 
+export type FeatureOptions = Record<string, unknown>;
+
 export type FeatureDefinition = {
   id: string;
   name: string;
   description: string;
   detect: (context: ProjectContext) => Promise<boolean>;
-  apply: (context: ProjectContext) => Promise<void>;
+  prompt?: (context: ProjectContext) => Promise<FeatureOptions>;
+  apply: (context: ProjectContext, options?: FeatureOptions) => Promise<void>;
 };

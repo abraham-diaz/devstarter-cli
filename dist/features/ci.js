@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 import prompts from 'prompts';
+import { getInstallCommand, getRunCommand, } from '../utils/detectPackageManager.js';
 async function detect(context) {
     // Check for GitLab CI
     if (await fs.pathExists(path.join(context.root, '.gitlab-ci.yml'))) {
@@ -16,32 +17,12 @@ async function detect(context) {
     }
     return false;
 }
-function getInstallCommand(context) {
-    switch (context.packageManager) {
-        case 'pnpm':
-            return 'pnpm install --frozen-lockfile';
-        case 'yarn':
-            return 'yarn install --frozen-lockfile';
-        default:
-            return 'npm ci';
-    }
-}
-function getRunCommand(context, script) {
-    switch (context.packageManager) {
-        case 'pnpm':
-            return `pnpm run ${script}`;
-        case 'yarn':
-            return `yarn ${script}`;
-        default:
-            return `npm run ${script}`;
-    }
-}
 function getScripts(packageJson) {
     return packageJson.scripts ?? {};
 }
 function generateGitHubWorkflow(context) {
     const scripts = getScripts(context.packageJson);
-    const installCmd = getInstallCommand(context);
+    const installCmd = getInstallCommand(context.packageManager);
     const steps = [
         '      - uses: actions/checkout@v4',
         '      - uses: actions/setup-node@v4',
@@ -50,13 +31,13 @@ function generateGitHubWorkflow(context) {
         `      - run: ${installCmd}`,
     ];
     if (scripts.lint) {
-        steps.push(`      - run: ${getRunCommand(context, 'lint')}`);
+        steps.push(`      - run: ${getRunCommand(context.packageManager, 'lint')}`);
     }
     if (scripts.test) {
-        steps.push(`      - run: ${getRunCommand(context, 'test')}`);
+        steps.push(`      - run: ${getRunCommand(context.packageManager, 'test')}`);
     }
     if (scripts.build) {
-        steps.push(`      - run: ${getRunCommand(context, 'build')}`);
+        steps.push(`      - run: ${getRunCommand(context.packageManager, 'build')}`);
     }
     return `name: CI
 on:
@@ -73,7 +54,7 @@ ${steps.join('\n')}
 }
 function generateGitLabCI(context) {
     const scripts = getScripts(context.packageJson);
-    const installCmd = getInstallCommand(context);
+    const installCmd = getInstallCommand(context.packageManager);
     let config = `stages:
   - install
   - lint
@@ -95,7 +76,7 @@ lint:
   stage: lint
   image: node:20-alpine
   script:
-    - ${getRunCommand(context, 'lint')}
+    - ${getRunCommand(context.packageManager, 'lint')}
   cache:
     paths:
       - node_modules/
@@ -107,7 +88,7 @@ test:
   stage: test
   image: node:20-alpine
   script:
-    - ${getRunCommand(context, 'test')}
+    - ${getRunCommand(context.packageManager, 'test')}
   cache:
     paths:
       - node_modules/
@@ -119,7 +100,7 @@ build:
   stage: build
   image: node:20-alpine
   script:
-    - ${getRunCommand(context, 'build')}
+    - ${getRunCommand(context.packageManager, 'build')}
   cache:
     paths:
       - node_modules/
@@ -127,7 +108,7 @@ build:
     }
     return config;
 }
-async function apply(context) {
+async function prompt() {
     const { provider } = await prompts({
         type: 'select',
         name: 'provider',
@@ -140,6 +121,10 @@ async function apply(context) {
     if (!provider) {
         throw new Error('CI provider selection cancelled');
     }
+    return { provider };
+}
+async function apply(context, options) {
+    const provider = options?.provider;
     if (provider === 'github') {
         const workflowDir = path.join(context.root, '.github', 'workflows');
         await fs.ensureDir(workflowDir);
@@ -154,5 +139,6 @@ export const ciFeature = {
     name: 'CI',
     description: 'Continuous integration with GitHub Actions or GitLab CI',
     detect,
+    prompt,
     apply,
 };

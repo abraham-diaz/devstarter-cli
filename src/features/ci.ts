@@ -1,7 +1,15 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 import prompts from 'prompts';
-import type { FeatureDefinition, ProjectContext } from '../types/feature.js';
+import type {
+  FeatureDefinition,
+  FeatureOptions,
+  ProjectContext,
+} from '../types/feature.js';
+import {
+  getInstallCommand,
+  getRunCommand,
+} from '../utils/detectPackageManager.js';
 
 type CIProvider = 'github' | 'gitlab';
 
@@ -23,35 +31,13 @@ async function detect(context: ProjectContext): Promise<boolean> {
   return false;
 }
 
-function getInstallCommand(context: ProjectContext): string {
-  switch (context.packageManager) {
-    case 'pnpm':
-      return 'pnpm install --frozen-lockfile';
-    case 'yarn':
-      return 'yarn install --frozen-lockfile';
-    default:
-      return 'npm ci';
-  }
-}
-
-function getRunCommand(context: ProjectContext, script: string): string {
-  switch (context.packageManager) {
-    case 'pnpm':
-      return `pnpm run ${script}`;
-    case 'yarn':
-      return `yarn ${script}`;
-    default:
-      return `npm run ${script}`;
-  }
-}
-
 function getScripts(packageJson: Record<string, unknown>): Record<string, string> {
   return (packageJson.scripts as Record<string, string>) ?? {};
 }
 
 function generateGitHubWorkflow(context: ProjectContext): string {
   const scripts = getScripts(context.packageJson);
-  const installCmd = getInstallCommand(context);
+  const installCmd = getInstallCommand(context.packageManager);
 
   const steps = [
     '      - uses: actions/checkout@v4',
@@ -62,13 +48,13 @@ function generateGitHubWorkflow(context: ProjectContext): string {
   ];
 
   if (scripts.lint) {
-    steps.push(`      - run: ${getRunCommand(context, 'lint')}`);
+    steps.push(`      - run: ${getRunCommand(context.packageManager,'lint')}`);
   }
   if (scripts.test) {
-    steps.push(`      - run: ${getRunCommand(context, 'test')}`);
+    steps.push(`      - run: ${getRunCommand(context.packageManager,'test')}`);
   }
   if (scripts.build) {
-    steps.push(`      - run: ${getRunCommand(context, 'build')}`);
+    steps.push(`      - run: ${getRunCommand(context.packageManager,'build')}`);
   }
 
   return `name: CI
@@ -87,7 +73,7 @@ ${steps.join('\n')}
 
 function generateGitLabCI(context: ProjectContext): string {
   const scripts = getScripts(context.packageJson);
-  const installCmd = getInstallCommand(context);
+  const installCmd = getInstallCommand(context.packageManager);
 
   let config = `stages:
   - install
@@ -111,7 +97,7 @@ lint:
   stage: lint
   image: node:20-alpine
   script:
-    - ${getRunCommand(context, 'lint')}
+    - ${getRunCommand(context.packageManager,'lint')}
   cache:
     paths:
       - node_modules/
@@ -124,7 +110,7 @@ test:
   stage: test
   image: node:20-alpine
   script:
-    - ${getRunCommand(context, 'test')}
+    - ${getRunCommand(context.packageManager,'test')}
   cache:
     paths:
       - node_modules/
@@ -137,7 +123,7 @@ build:
   stage: build
   image: node:20-alpine
   script:
-    - ${getRunCommand(context, 'build')}
+    - ${getRunCommand(context.packageManager,'build')}
   cache:
     paths:
       - node_modules/
@@ -147,7 +133,7 @@ build:
   return config;
 }
 
-async function apply(context: ProjectContext): Promise<void> {
+async function prompt(): Promise<FeatureOptions> {
   const { provider } = await prompts({
     type: 'select',
     name: 'provider',
@@ -162,7 +148,16 @@ async function apply(context: ProjectContext): Promise<void> {
     throw new Error('CI provider selection cancelled');
   }
 
-  if ((provider as CIProvider) === 'github') {
+  return { provider };
+}
+
+async function apply(
+  context: ProjectContext,
+  options?: FeatureOptions,
+): Promise<void> {
+  const provider = options?.provider as CIProvider;
+
+  if (provider === 'github') {
     const workflowDir = path.join(context.root, '.github', 'workflows');
     await fs.ensureDir(workflowDir);
     await fs.writeFile(
@@ -182,5 +177,6 @@ export const ciFeature: FeatureDefinition = {
   name: 'CI',
   description: 'Continuous integration with GitHub Actions or GitLab CI',
   detect,
+  prompt,
   apply,
 };

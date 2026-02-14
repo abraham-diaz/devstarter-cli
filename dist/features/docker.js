@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import path from 'node:path';
+import { getInstallCommand } from '../utils/detectPackageManager.js';
 async function detect(context) {
     const configFiles = [
         'Dockerfile',
@@ -22,18 +23,8 @@ function isFrontend(packageJson) {
     };
     return 'vite' in deps;
 }
-function getInstallCommand(context) {
-    switch (context.packageManager) {
-        case 'pnpm':
-            return 'pnpm install --frozen-lockfile';
-        case 'yarn':
-            return 'yarn install --frozen-lockfile';
-        default:
-            return 'npm ci';
-    }
-}
 function generateDockerfile(context) {
-    const installCmd = getInstallCommand(context);
+    const installCmd = getInstallCommand(context.packageManager);
     const frontend = isFrontend(context.packageJson);
     if (frontend) {
         return `FROM node:20-alpine AS build
